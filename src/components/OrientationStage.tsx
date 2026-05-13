@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import {
   LANDSCAPE_DESIGN,
-  LOGICAL_STAGE_H,
-  LOGICAL_STAGE_W,
   PORTRAIT_DESIGN,
+  getLogicalStageSize,
 } from '../constants/stage'
 
 function getIsLandscape(): boolean {
@@ -22,6 +21,7 @@ export function OrientationStage({ children }: { children: ReactNode }) {
   const [isLandscape, setIsLandscape] = useState(getIsLandscape)
 
   const design = isLandscape ? LANDSCAPE_DESIGN : PORTRAIT_DESIGN
+  const logicalStage = getLogicalStageSize(isLandscape)
 
   useEffect(() => {
     function onResize() {
@@ -56,26 +56,28 @@ export function OrientationStage({ children }: { children: ReactNode }) {
     }
   }, [design.height, design.width])
 
-  const contentK = Math.min(design.width / LOGICAL_STAGE_W, design.height / LOGICAL_STAGE_H)
-
-  const hostAspectStyle = isLandscape
-    ? {
-        aspectRatio: '16 / 9' as const,
-        height: 'min(100dvh, calc(100dvw * 9 / 16))',
-        width: 'min(100dvw, calc(100dvh * 16 / 9))',
-      }
-    : {
-        aspectRatio: '9 / 16' as const,
-        height: 'min(100dvh, calc(100dvw * 16 / 9))',
-        width: 'min(100dvw, calc(100dvh * 9 / 16))',
-      }
+  const contentK = Math.min(design.width / logicalStage.width, design.height / logicalStage.height)
 
   return (
     <div className="flex h-full w-full items-center justify-center bg-black">
       <div
         ref={hostRef}
         className="relative overflow-hidden bg-black"
-        style={hostAspectStyle}
+        style={
+          isLandscape
+            ? {
+                width: '100dvw',
+                height: '56.25dvw', // 100 * 9/16
+                maxHeight: '100dvh',
+                maxWidth: '177.78dvh', // 100 * 16/9
+              }
+            : {
+                width: '56.25dvh', // 100 * 9/16
+                height: '100dvh',
+                maxWidth: '100dvw',
+                maxHeight: '177.78dvw', // 100 * 16/9
+              }
+        }
       >
         <div
           className="absolute left-0 top-0 origin-top-left will-change-transform"
@@ -90,17 +92,17 @@ export function OrientationStage({ children }: { children: ReactNode }) {
             <div
               className="relative overflow-hidden"
               style={{
-                height: LOGICAL_STAGE_H * contentK,
-                width: LOGICAL_STAGE_W * contentK,
+                height: logicalStage.height * contentK,
+                width: logicalStage.width * contentK,
               }}
             >
               <div
                 className="absolute left-0 top-0 origin-top-left"
                 style={{
-                  height: LOGICAL_STAGE_H,
+                  height: logicalStage.height,
                   transform: `scale(${contentK})`,
                   transformOrigin: 'top left',
-                  width: LOGICAL_STAGE_W,
+                  width: logicalStage.width,
                 }}
               >
                 <div className="relative h-full min-h-0 w-full overflow-x-hidden">{children}</div>

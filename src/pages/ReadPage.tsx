@@ -31,10 +31,13 @@ type VoiceOption = { id: string; name: string; kind: 'preset' | 'cloned' }
 function useFitReadFrame(designW: number, designH: number) {
   const [scale, setScale] = useState(1)
   useEffect(() => {
-    const pad = 12
+    const pad = 0 // 移除 padding，让内容完全填满
     const update = () => {
-      const sw = (LOGICAL_STAGE_W - pad * 2) / designW
-      const sh = (LOGICAL_STAGE_H - pad * 2) / designH
+      const isLandscape = window.innerWidth > window.innerHeight
+      const stageW = isLandscape ? LOGICAL_STAGE_H : LOGICAL_STAGE_W // 横屏用 667，竖屏用 375
+      const stageH = isLandscape ? LOGICAL_STAGE_W : LOGICAL_STAGE_H // 横屏用 375，竖屏用 667
+      const sw = (stageW - pad * 2) / designW
+      const sh = (stageH - pad * 2) / designH
       setScale(Math.max(0.42, Math.min(sw, sh, 1.35)))
     }
     update()
