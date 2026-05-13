@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>知绘本 Step2 — 可点击流程原型</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        background: #fff8e7;
+        color: #2c3e50;
+        min-height: 100vh;
+      }
+      .app {
+        max-width: 375px;
+        margin: 0 auto;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        border-left: 1px solid #e5e4e7;
+        border-right: 1px solid #e5e4e7;
+      }
+      header.proto-bar {
+        padding: 10px 12px;
+        background: #ff9f3a;
+        color: #fff;
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .screen {
+        display: none;
+        flex: 1;
+        flex-direction: column;
+        padding: 12px;
+        gap: 10px;
+      }
+      .screen.active {
+        display: flex;
+      }
+      .zone-label {
+        font-size: 11px;
+        color: #6b7280;
+        margin-bottom: 4px;
+      }
+      .block {
+        border-radius: 16px;
+        padding: 12px;
+        border: 2px dashed #cbd5e1;
+        background: rgba(255, 255, 255, 0.7);
+      }
+      .block.primary {
+        border-color: #ff9f3a;
+        background: rgba(255, 159, 58, 0.12);
+      }
+      .block.camera {
+        min-height: 220px;
+        background: linear-gradient(145deg, #1e293b 0%, #334155 100%);
+        color: #94a3b8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+      }
+      .tabs {
+        display: flex;
+        gap: 8px;
+        margin-top: auto;
+      }
+      .tabs button {
+        flex: 1;
+        padding: 12px 8px;
+        border: none;
+        border-radius: 12px;
+        background: #fff;
+        box-shadow: 0 4px 0 #e8892e;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 13px;
+      }
+      .tabs button:active {
+        transform: translateY(2px);
+        box-shadow: 0 2px 0 #e8892e;
+      }
+      .tabs button.active {
+        background: #ff9f3a;
+        color: #fff;
+      }
+      .row-btns {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .row-btns button {
+        flex: 1;
+        min-width: 120px;
+        padding: 10px;
+        border-radius: 12px;
+        border: none;
+        background: #5ec8ff;
+        color: #fff;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 13px;
+      }
+      .row-btns button.secondary {
+        background: #7ed957;
+      }
+      .row-btns button.warn {
+        background: #ff7ba3;
+      }
+      .hint {
+        font-size: 12px;
+        color: #6b7280;
+        line-height: 1.5;
+      }
+      .landscape {
+        max-width: 667px;
+        margin: 0 auto;
+        min-height: 280px;
+      }
+      .landscape .toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 13px;
+        padding: 8px;
+        background: rgba(255, 159, 58, 0.2);
+        border-radius: 12px;
+      }
+      .landscape .stage {
+        flex: 1;
+        margin: 10px 0;
+        border-radius: 20px;
+        background: linear-gradient(180deg, #ffe566 0%, #fff 100%);
+        border: 3px solid #ff9f3a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 160px;
+        font-size: 14px;
+        color: #2c3e50;
+      }
+      .seg {
+        display: flex;
+        border-radius: 999px;
+        overflow: hidden;
+        border: 2px solid #fff;
+      }
+      .seg button {
+        padding: 8px 14px;
+        border: none;
+        background: rgba(255, 255, 255, 0.3);
+        color: #fff;
+        cursor: pointer;
+        font-size: 12px;
+      }
+      .seg button.on {
+        background: #fff;
+        color: #ff9f3a;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <header class="proto-bar">Step2 低保真原型 · 点击按钮切换页面（非真实业务）</header>
+
+      <!-- P1 -->
+      <section id="p1" class="screen active">
+        <div class="zone-label">顶部装饰区（云/星/气球动画）</div>
+        <div class="block primary" style="text-align: center; font-size: 18px; font-weight: 700">
+          我的绘本书架
+        </div>
+        <div class="zone-label">书架网格 · 空状态可显示小熊插画</div>
+        <div class="block" style="min-height: 160px; text-align: center; padding-top: 48px">
+          （绘本卡片 2 列）
+        </div>
+        <div class="tabs">
+          <button type="button" class="active">书架</button>
+          <button type="button" id="p1-to-p2">开始读书</button>
+          <button type="button" id="p1-to-p6">音色克隆</button>
+        </div>
+      </section>
+
+      <!-- P2 -->
+      <section id="p2" class="screen">
+        <div style="display: flex; justify-content: space-between; align-items: center">
+          <button
+            type="button"
+            id="p2-close"
+            style="
+              border: none;
+              background: #fff;
+              border-radius: 10px;
+              padding: 8px 12px;
+              cursor: pointer;
+              font-weight: 600;
+            "
+          >
+            ✕
+          </button>
+          <div class="seg">
+            <button type="button" class="on" id="mode-qr">扫二维码</button>
+            <button type="button" id="mode-photo">拍绘本</button>
+          </div>
+        </div>
+        <div class="zone-label">摄像头预览 · 识别框</div>
+        <div class="block camera">Camera preview · 虚线框 + 气泡</div>
+        <div class="hint">拍绘本：点击画面 → 2s → 仅播放音频（无文字）</div>
+        <div class="zone-label">Demo 分支（扫码场景）</div>
+        <div class="row-btns">
+          <button type="button" id="p2-to-p3">模拟：有二维码 → P3</button>
+          <button type="button" class="secondary" id="p2-to-p5">
+            模拟：无二维码绘本 → P5
+          </button>
+        </div>
+        <div style="display: flex; gap: 12px; justify-content: center; margin-top: 8px">
+          <span style="font-size: 20px">🔦</span>
+          <span style="font-size: 20px">🖼</span>
+        </div>
+      </section>
+
+      <!-- P3 -->
+      <section id="p3" class="screen">
+        <button
+          type="button"
+          id="p3-back"
+          style="
+            align-self: flex-start;
+            border: none;
+            background: #fff;
+            border-radius: 10px;
+            padding: 8px 12px;
+            cursor: pointer;
+          "
+        >
+          ✕
+        </button>
+        <div class="block primary" style="text-align: center">
+          <div>🎉 找到啦！</div>
+          <div style="margin-top: 12px; font-size: 20px; font-weight: 700">《小兔子的梦想》</div>
+          <div style="margin-top: 8px; font-size: 14px">作者 · 张三 · ✓ 已加入书架</div>
+        </div>
+        <button
+          type="button"
+          id="p3-to-p4"
+          style="
+            padding: 14px;
+            border: none;
+            border-radius: 999px;
+            background: #ff9f3a;
+            color: #fff;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #e8892e;
+          "
+        >
+          马上开始读
+        </button>
+      </section>
+
+      <!-- P4 -->
+      <section id="p4" class="screen landscape">
+        <div class="toolbar">
+          <button type="button" id="p4-back" style="border: none; background: transparent; cursor: pointer">
+            ←
+          </button>
+          <span>书名</span>
+          <span>♪ ⋯</span>
+        </div>
+        <div class="stage">仅绘本插图 · 无文字层</div>
+        <div class="toolbar">
+          <span>◀ ⏯ ▶</span>
+          <span>音色 · 3/10</span>
+        </div>
+      </section>
+
+      <!-- P5 -->
+      <section id="p5" class="screen">
+        <div style="display: flex; justify-content: space-between; align-items: center">
+          <button type="button" id="p5-close" style="border: none; background: #fff; border-radius: 10px; padding: 8px; cursor: pointer">✕</button>
+          <span style="font-size: 13px; color: #7ed957">● 聆听中</span>
+        </div>
+        <div class="block camera" style="min-height: 240px">实时相机 · 光圈动画 · 无文案</div>
+        <div class="block">底部：播放状态 / 音色（仅图标与控件）</div>
+      </section>
+
+      <!-- P6 -->
+      <section id="p6" class="screen">
+        <div class="zone-label">朗读提示卡片</div>
+        <div class="block">请大声朗读：……</div>
+        <div class="block primary" style="text-align: center; padding: 28px; touch-action: none">
+          🎤 按住录音（touch-action:none）
+        </div>
+        <div class="block" style="height: 48px">波形区域</div>
+        <div class="hint">已录制 0s / 15s · 5–15s 校验</div>
+        <div class="row-btns">
+          <button type="button" class="warn">重新录制</button>
+          <button type="button" id="p6-to-p7">完成</button>
+        </div>
+      </section>
+
+      <!-- P7 -->
+      <section id="p7" class="screen">
+        <div class="block primary" style="text-align: center; font-weight: 700">✅ 音色生成成功</div>
+        <div class="block">试听 · 波形</div>
+        <div class="block">角色：妈妈 / 爸爸 / … · 名称输入</div>
+        <div class="row-btns">
+          <button type="button" class="warn">重新录制</button>
+          <button type="button" id="p7-to-p1">保存 → 首页</button>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      function show(id) {
+        var screens = document.querySelectorAll('.screen')
+        for (var i = 0; i < screens.length; i++) {
+          screens[i].classList.remove('active')
+        }
+        document.getElementById(id).classList.add('active')
+      }
+
+      document.getElementById('p1-to-p2').onclick = function () {
+        show('p2')
+      }
+      document.getElementById('p1-to-p6').onclick = function () {
+        show('p6')
+      }
+      document.getElementById('p2-close').onclick = function () {
+        show('p1')
+      }
+      document.getElementById('p2-to-p3').onclick = function () {
+        show('p3')
+      }
+      document.getElementById('p2-to-p5').onclick = function () {
+        show('p5')
+      }
+      document.getElementById('p3-back').onclick = function () {
+        show('p1')
+      }
+      document.getElementById('p3-to-p4').onclick = function () {
+        show('p4')
+      }
+      document.getElementById('p4-back').onclick = function () {
+        show('p1')
+      }
+      document.getElementById('p5-close').onclick = function () {
+        show('p1')
+      }
+      document.getElementById('p6-to-p7').onclick = function () {
+        show('p7')
+      }
+      document.getElementById('p7-to-p1').onclick = function () {
+        show('p1')
+      }
+
+      document.getElementById('mode-qr').onclick = function () {
+        document.getElementById('mode-qr').className = 'on'
+        document.getElementById('mode-photo').className = ''
+      }
+      document.getElementById('mode-photo').onclick = function () {
+        document.getElementById('mode-photo').className = 'on'
+        document.getElementById('mode-qr').className = ''
+      }
+    </script>
+  </body>
+</html>

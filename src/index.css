@@ -1,0 +1,138 @@
+@import 'tailwindcss';
+
+:root {
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  color: #2c3e50;
+  background-color: #000000;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+#root {
+  height: 100%;
+  min-height: 100%;
+}
+
+@keyframes zh-float {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(10px);
+  }
+}
+
+@keyframes zh-float-delay {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-8px);
+  }
+}
+
+@keyframes zh-twinkle {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes zh-twinkle-delay {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes zh-balloon {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-4deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(4deg);
+  }
+}
+
+.cloud-float {
+  animation: zh-float 8s ease-in-out infinite;
+}
+
+.cloud-float-delay {
+  animation: zh-float-delay 9s ease-in-out infinite;
+}
+
+.star-twinkle {
+  animation: zh-twinkle 2.4s ease-in-out infinite;
+}
+
+.star-twinkle-delay {
+  animation: zh-twinkle-delay 2.8s ease-in-out 0.6s infinite;
+}
+
+.balloon-sway {
+  animation: zh-balloon 3s ease-in-out infinite;
+}
+
+@keyframes zh-scan-sweep {
+  0% {
+    top: 0;
+    opacity: 0.85;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    top: calc(100% - 3px);
+    opacity: 0.85;
+  }
+}
+
+.scan-line {
+  animation: zh-scan-sweep 1.6s ease-in-out infinite;
+}
+
+/* 识别成功页撒花：仅用 transform + opacity */
+@keyframes zh-confetti-fall {
+  0% {
+    transform: translate3d(0, -12vh, 0) rotate(0deg);
+    opacity: 0;
+  }
+  6% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(var(--zh-drift, 0px), 108vh, 0) rotate(var(--zh-spin, 540deg));
+    opacity: 0;
+  }
+}
+
+.scan-result-confetti-piece {
+  position: absolute;
+  top: -8vh;
+  border-radius: 2px;
+  will-change: transform, opacity;
+  animation-name: zh-confetti-fall;
+  animation-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
+  animation-fill-mode: forwards;
+}
